@@ -35,22 +35,18 @@
       <li class="nav-item {% if request.resolver_match.url_name == "mapa" %}active{% endif %}">
         <a class="nav-link " href="{% url 'mapa' %}">Mapa</a>
       </li>
-      <li class="nav-item">
-      
-        <a class="nav-link" href="#">Features</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Pricing</a>
-      </li>
+    
+      {% if user.is_anonymous %}
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Registrarse
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
           <a class="dropdown-item  {% if request.resolver_match.url_name == "registro_normal" %}active{% endif %} " href="{% url 'registro_normal' %}">Arrendatario</a>
-          <a class="dropdown-item" href="#">Propietario</a>
+          <a class="dropdown-item  {% if request.resolver_match.url_name == "registro_propietario" %}active{% endif %}" href="{% url 'registro_propietario' %}">Propietario</a>
         </div>
       </li>
+      {% endif %}
       {% if user.is_anonymous %}
       <li class="nav-item">
         <a class="nav-link" href="{% url 'login' %}">Login</a>

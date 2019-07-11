@@ -1,10 +1,19 @@
 {% extends 'estacionamiento/base.html' %}
 {% load static %}
 {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/registro_propietario.css' %}">
 {% endblock extra_css %}
 {% block content %}
-    <form  method="POST" action="">
-        <h2>Registro Arrendatario</h2>
+{% if messages %}
+{% for message in messages %}
+<div class="wow wobble" id="alert-{{ alert }}">
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    <strong> {{ message }} </strong>
+</div>
+{% endfor %}
+{% endif %}
+    <form  method="POST"  enctype="multipart/form-data" action="">{% csrf_token %}
+        <h2>Registro Propietario</h2>
            
         <div class="form-group">
             <div class="row">
@@ -17,20 +26,10 @@
             </div>
         </div>
         <div class="form-group">
-            <div class="row">
-                <div class="col">
+        
                     <input name="txtdireccion" id="txtdireccion" placeholder="Direccion" class="form-control form-control-sm"
                     type="eamil">
-                </div>
-                <div class="col">
-                    <select   class="form-control form-control-sm" name="txtgenero" id="">
-                        <option value="" selected disabled>Genero</option>
-                        <option value="Otro">Otro</option>
-                        <option value="Femenino">Femenino</option>
-                        <option value="Masculino">Masculino</option>
-                    </select>
-                </div>
-            </div>
+            
            
         </div>
          <div class="form-group">
@@ -47,7 +46,7 @@
            
         </div>
          <div class="form-group">
-         <label for="txtimagen">Imagen referencial:</label>
+         <label for="txtimagen">Imagen estacionamiento:</label>
         <div class="custom-file">
             <input type="file" name="txtimagen" class="custom-file-input  " id="txtimagen" lang="es">
             <label  class="custom-file-label" for="txtimagen">Seleccionar Archivo</label>

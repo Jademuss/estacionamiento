@@ -11,6 +11,7 @@ urlpatterns = [
     path('login/',views.login_view,name='login'),
     path('logout/',views.logout_view,name='logout' ),
     path('registro_normal/',views.registro_normal,name='registro_normal' ),
+    path('registro_propietario/',views.registro_propietario,name='registro_propietario' ),
     # path('',views.lista_carritos,name='lista_carritos'),
   
 ]

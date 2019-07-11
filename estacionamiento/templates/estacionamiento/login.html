@@ -4,6 +4,15 @@
 <link rel="stylesheet" href="{% static 'css/login.css' %}">
 {% endblock extra_css %}
 {% block content %}
+
+{% if messages %}
+{% for message in messages %}
+<div class="wow wobble" id="alert-{{ alert }}">
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    <strong> {{ message }} </strong>
+</div>
+{% endfor %}
+{% endif %}
      <div class="container">
             <div id="login-row" class="row justify-content-center align-items-center">
                 <div id="login-column" class="col-md-6">

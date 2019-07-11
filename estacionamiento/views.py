@@ -12,7 +12,7 @@ from .models import Perfil
 
 
 def login_view(request):
-   
+    alert = 'verde'
     if request.method == 'POST':
         username = request.POST['txtuser'].lower()
         password = request.POST['txtpass']
@@ -21,11 +21,13 @@ def login_view(request):
             login(request,user) 
             return HttpResponseRedirect(reverse('mapa'))
         else:
-            
-            return render(request, 'estacionamiento/login.html')
+            alert= 'roja'
+            messages.error(request,'Error al ingresar')
+            variables = {'alert':alert}
+            return render(request, 'estacionamiento/login.html',variables)
     else:
-        
-        return render(request,'estacionamiento/login.html') 
+        variables = {'alert':alert}
+        return render(request,'estacionamiento/login.html',variables) 
 @login_required(login_url='login')
 def logout_view(request):
   
@@ -33,7 +35,11 @@ def logout_view(request):
         logout(request)
     return redirect('login')
 def mapa(request):
-    return render(request,'estacionamiento/mapa.html')
+    
+    propietarios = User.objects.all()
+    variables = {'propietarios':propietarios}
+
+    return render(request,'estacionamiento/mapa.html',variables)
 
 def registro_normal(request):
     user = User()
@@ -59,3 +65,40 @@ def registro_normal(request):
         user.save()
         # AQUI QUEDEE
     return render(request,'estacionamiento/registro_normal.html')
+def registro_propietario(request):
+    user = User()   
+    alert = 'verde'
+    
+    if request.method == 'POST':
+  
+        try:
+            user = User.objects.create_user(username=request.POST.get('txtemail'),password=request.POST.get('txtpass'))
+            mensaje = 'Registrado como propietario'
+        except:
+            messages.success(request,'Usuario ya registrado')
+            alert = 'roja'          
+            variables = {'alert':alert} 
+            return render(request,'estacionamiento/registro_propietario.html',variables)
+        user.email = request.POST.get('txtemail')
+        user.first_name = request.POST.get('txtnombre')
+        user.last_name = request.POST.get('txtapellido')
+        user.perfil.direccion = request.POST.get('txtdireccion')
+        user.perfil.telefono  = request.POST.get('txttelefono')
+        user.perfil.foto = request.FILES.get('txtimagen')
+        user.perfil.fecha_nacimiento = request.POST.get('txtfecha')
+        user.perfil.tipo = 'Propietario'
+        user.perfil.estado = 'Disponible'
+        user.perfil.latitud = request.POST.get('txtlatitud')
+        user.perfil.longitud = request.POST.get('txtlongitud')
+        try:
+           
+            messages.error(request,mensaje)
+            user.save()
+            variables = {'alert':alert}
+            return render(request,'estacionamiento/registro_propietario.html',variables)
+        except:
+            alert= 'roja'
+            messages.error(request,'Error al registrarse')
+            variables = {'alert':alert}
+            return render(request,'estacionamiento/registro_propietario.html',variables)
+    return render(request,'estacionamiento/registro_propietario.html')
