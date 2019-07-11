@@ -36,6 +36,7 @@
         <a class="nav-link " href="{% url 'mapa' %}">Mapa</a>
       </li>
       <li class="nav-item">
+      
         <a class="nav-link" href="#">Features</a>
       </li>
       <li class="nav-item">
@@ -50,6 +51,21 @@
           <a class="dropdown-item" href="#">Propietario</a>
         </div>
       </li>
+      {% if user.is_anonymous %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'login' %}">Login</a>
+      </li>
+      {% endif %}
+      {% if user.is_authenticated %}
+       <li class="nav-item ">
+                    <form id="form-logout"  action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+
+                        <a id="logout" onclick="document.getElementById('form-logout').submit();" class="nav-link">Cerrar
+                            sesión</a>
+                    </form>
+                </li>
+      {% endif %}
     </ul>
   </div>
 </nav>

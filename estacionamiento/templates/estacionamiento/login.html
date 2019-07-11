@@ -1,0 +1,38 @@
+{% extends 'estacionamiento/base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock extra_css %}
+{% block content %}
+     <div class="container">
+            <div id="login-row" class="row justify-content-center align-items-center">
+                <div id="login-column" class="col-md-6">
+                    <div id="login-box" class="col-md-12">
+                        <form id="login-form" class="form" action="" method="post">{% csrf_token %}
+                            <h3 class="text-center text-info">Login</h3>
+                            <div class="form-group">
+                                <label for="username" class="text-info">Usuario:</label><br>
+                                <input type="text" name="txtuser" id="username" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="password" class="text-info">Contraseña:</label><br>
+                                <input type="password" name="txtpass" id="password" class="form-control">
+                            </div>
+                            <div class="form-group">
+                             
+                                <input type="submit" name="submit" class="btn btn-info btn-md " value="Ingresar">
+                            </div>
+                            <div id="register-link" class="text-right">
+                              
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+{% endblock content %}
+{% block extra_js %}
+
+{% endblock extra_js %}

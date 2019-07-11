@@ -22,10 +22,10 @@ def login_view(request):
             return HttpResponseRedirect(reverse('mapa'))
         else:
             
-            return render(request, 'carts/login.html',context)
+            return render(request, 'estacionamiento/login.html')
     else:
         
-        return render(request,'carts/login.html',context) 
+        return render(request,'estacionamiento/login.html') 
 @login_required(login_url='login')
 def logout_view(request):
   
@@ -37,13 +37,25 @@ def mapa(request):
 
 def registro_normal(request):
     user = User()
-    perfil = Perfil()
+
+    alert = 'verde'
     if request.method == 'POST':
+        try:
+            user = User.objects.create_user(username=request.POST.get('txtemail'),password=request.POST.get('txtpass'))
+            mensaje = 'Registrado como arrendatario'
+        except:
+            messages.success(request,'Usuario ya registrado')
+            alert = 'roja'          
+            variables = {'alert':alert} 
+            return render(request,'estacionamiento/registro_normal.html',variables)
+        user.email = request.POST.get('txtemail')
         user.first_name = request.POST.get('txtnombre')
         user.last_name = request.POST.get('txtapellido')
-        user.email = request.POST.get('txtemail')
-        user.perfil.telefono =request.POST.get('txttelefono')
-        user.perfil.fecha_nacimiento
-        user.perfil.tipo   
+        user.perfil.fecha_nacimiento = requets.POST.get('txtfecha')
+        user.perfil.telefono  = request.POST.get('txttelefono')
+        user.perfil.direccion = request.POST.get('txtdireccion')
+        user.perfil.tipo = 'Normal'
+        messages.error(request,mensaje)
+        user.save()
         # AQUI QUEDEE
     return render(request,'estacionamiento/registro_normal.html')
