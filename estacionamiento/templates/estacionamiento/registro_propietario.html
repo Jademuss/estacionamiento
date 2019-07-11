@@ -1,0 +1,231 @@
+{% extends 'estacionamiento/base.html' %}
+{% load static %}
+{% block extra_css %}
+{% endblock extra_css %}
+{% block content %}
+    <form  method="POST" action="">
+        <h2>Registro Arrendatario</h2>
+           
+        <div class="form-group">
+            <div class="row">
+                <div class="col">
+                    <input name="txtnombre" type="text" class="form-control form-control-sm" placeholder="Nombres">
+                </div>
+                <div class="col">
+                    <input name="txtapellido" type="text" class="form-control form-control-sm" placeholder="Apellidos">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col">
+                    <input name="txtdireccion" id="txtdireccion" placeholder="Direccion" class="form-control form-control-sm"
+                    type="eamil">
+                </div>
+                <div class="col">
+                    <select   class="form-control form-control-sm" name="txtgenero" id="">
+                        <option value="" selected disabled>Genero</option>
+                        <option value="Otro">Otro</option>
+                        <option value="Femenino">Femenino</option>
+                        <option value="Masculino">Masculino</option>
+                    </select>
+                </div>
+            </div>
+           
+        </div>
+         <div class="form-group">
+         <div class="row">
+             <div class="col">
+                    <label for="txttelefono">Telefono</label>
+                    <input name="txttelefono"  id="txttelefono" class="form-control form-control-sm" type="number">
+             </div>
+             <div class="col">
+                    <label for="txtfecha">Fecha nacimiento:</label>
+                    <input  class="form-control form-control-sm" type="date" name="txtfecha" id="txtfecha">
+             </div>
+         </div>
+           
+        </div>
+         <div class="form-group">
+         <label for="txtimagen">Imagen referencial:</label>
+        <div class="custom-file">
+            <input type="file" name="txtimagen" class="custom-file-input  " id="txtimagen" lang="es">
+            <label  class="custom-file-label" for="txtimagen">Seleccionar Archivo</label>
+          </div>
+       </div>
+        <div class="form-group">
+            <div class="   accordion" id="accordionExample">
+                <div class="rounded-top card">
+                    <div class=" card-header" id="headingOne">
+                        <div class="row">
+                        
+                            <div class="col">
+                                <button id="mi_ubicacion" type="button" class=" btn btn-info">Mi ubicacion</button>
+                            </div>
+                        </div>
+    
+    
+                    </div>
+    
+                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
+                        data-parent="#accordionExample">
+                        <div class="card-body">
+                            <div id="map" style="width: 100%; height: 400px; background: steelblue" />
+                        </div>
+                    </div>
+                </div>
+    
+    
+            </div>
+    
+    
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col">
+                   
+                    <input required readonly id="txtlatitud" name="txtlatitud" class="form-control" type="hidden">
+                </div>
+    
+    
+    
+                <div class="col">
+                 
+                    <input required readonly id="txtlongitud" name="txtlongitud" class="form-control" type="hidden">
+                </div >
+            </div>
+    </div>
+       
+        <div class="form-group">
+            <label for="txtemail">Email:</label>
+            <input name="txtemail" id="txtemail" placeholder="ejemplo@gmail.com"
+                class="form-control form-control-lg " type="email">
+        </div>
+        <div class="form-group">
+            <label for="txtpass">Contraseña:</label>
+            <input name='txtpass' id="txtpass" placeholder="********" class="form-control form-control-lg "
+                type="password">
+        </div>
+        <div class="form-group " align="center">
+            <button type="submit" class="btn   btn-info btn-lg">Registrarse</button>
+        </div>
+    </form>
+    
+    
+
+
+{% endblock content %}
+{% block extra_js %}
+<script type="text/javascript" charset="UTF-8">
+    $('#collapseOne').collapse({toggle: false})
+
+    /**
+     * An event listener is added to listen to tap events on the map.
+     * Clicking on the map displays an alert box containing the latitude and longitude
+     * of the location pressed.
+     * @param  {H.Map} map      A HERE Map instance within the application
+     */
+    function setUpClickListener(map) {
+        // Attach an event listener to map display obtain the coordinates and display in
+        // an alert box.
+        const long = document.getElementById('txtlongitud')
+        const lat = document.getElementById('txtlatitud')
+        const yo = document.getElementById('mi_ubicacion')
+        map.addEventListener('tap', function (evt) {
+            var coord = map.screenToGeo(
+                evt.currentPointer.viewportX,
+                evt.currentPointer.viewportY
+            );
+            // alert('Clicked at ' + coord.lat  +' ' + coord.lng );
+            long.value = coord.lng;
+            lat.value = coord.lat;
+        });
+        yo.addEventListener('click', function () {
+            if (navigator.geolocation) {
+                // const watcher = navigator.geolocation.watchPosition(mostrarUbicacion);
+                // setTimeout(() => {   navigator.geolocation.clearWatch(watcher); }, 5000);
+
+                navigator
+                    .geolocation
+                    .getCurrentPosition(mostrarUbicacion);
+            }
+
+            function mostrarUbicacion(ubicacion) {
+                const lng = ubicacion.coords.longitude;
+                const late = ubicacion.coords.latitude;
+                long.value = lng;
+                lat.value = late;
+                function centrarYo(map) {
+                    map.setCenter({lat: late, lng: lng});
+                    map.setZoom(15.8);
+                }
+                centrarYo(map);
+                var iam = "{% static 'img/pig2.png' %}";
+                var icons = new H
+                    .map
+                    .Icon(iam);
+                function addMarkersToMap(map) {
+                    var maipu = new H
+                        .map
+                        .Marker({
+                            lat: late,
+                            lng: lng
+                        }, {icon: icons});
+                    map.addObject(maipu);
+
+                }
+                addMarkersToMap(map)
+            }
+        })
+
+    }
+
+   
+ function centrarMiapu(map){
+        map.setCenter({lat:-33.4444939, lng:-70.6838306 });
+        map.setZoom(12);
+      }
+      
+
+    var platform = new H
+        .service
+        .Platform(
+            {app_id: 'OQFc1LGBwy2hiEgmWiHC', app_code: 'jim9GfsIaK643wApePxIvg', useHTTPS: true}
+        );
+    var pixelRatio = window.devicePixelRatio || 1;
+    var defaultLayers = platform.createDefaultLayers({
+        tileSize: pixelRatio === 1
+            ? 256
+            : 512,
+        ppi: pixelRatio === 1
+            ? undefined
+            : 320
+    });
+
+    //Step 2: initialize a map
+    var map = new H.Map(document.getElementById('map'), defaultLayers.normal.map, {
+        center: {
+            lat: -33.4552348,
+            lng: -70.6954542
+        },
+        zoom: 12,
+        pixelRatio: pixelRatio
+    });
+
+    // Step 3: make the map interactive MapEvents enables the event system Behavior
+    // implements default interactions for pan/zoom (also on mobile touch
+    // environments)
+    var behavior = new H
+        .mapevents
+        .Behavior(new H.mapevents.MapEvents(map));
+    
+    centrarMiapu(map)
+    setUpClickListener(map);
+</script>
+ <script>
+$(document).ready(function () {
+  bsCustomFileInput.init()
+})
+</script>
+
+{% endblock extra_js %}

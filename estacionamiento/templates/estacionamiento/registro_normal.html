@@ -1,0 +1,64 @@
+{% extends 'estacionamiento/base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/registro_normal.css' %}">
+{% endblock extra_css %}
+{% block content %}
+<form class="bg-light rounded
+" method="POST">{% csrf_token %}
+      <h2>Registro Arrendatario</h2>
+
+      <div class="form-group">
+          <div class="row">
+              <div class="col">
+                  <input required name="txtnombre" type="text" class="form-control form-control-sm" placeholder="Nombres">
+              </div>
+              <div class="col">
+                  <input required  name="txtapellido" type="text" class="form-control form-control-sm" placeholder="Apellidos">
+              </div>
+          </div>
+      </div>
+      <div class="form-group">
+        
+            
+                  <input name="txtdireccion" id="txtdireccion" placeholder="Direccion"
+                      class="form-control form-control-sm" type="text">
+              
+        
+
+      </div>
+   
+      <div class="form-group">
+          <div class="row">
+              <div class="col">
+                   
+                    <input name="txttelefono" placeholder="Telefono" required class="form-control form-control-sm" type="number">
+              </div>
+              <div class="col">
+                    <input name="txtfecha" required class="form-control form-control-sm" type="date">
+              </div>
+          </div>
+          
+      </div>
+      <div class="form-group">
+          <label for="txtemail">Email:</label>
+          <input  required name="txtemail" id="txtemail" placeholder="ejemplo@gmail.com" class="form-control form-control-lg "
+              type="eamil">
+      </div>
+      <div class="form-group">
+          <label for="txtpass">Contraseña:</label>
+          <input required  name='txtpass' id="txtpass" placeholder="********" class="form-control form-control-lg "
+              type="password">
+      </div>
+      <div class="form-groupc " align="center">
+          <button type="submit" class="btn   btn-info btn-lg">Registrarse</button>
+      </div>
+  </form>
+
+
+{% endblock content %}
+{% block extra_js %}
+
+
+
+{% endblock extra_js %}
