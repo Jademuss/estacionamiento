@@ -21,6 +21,7 @@ class Perfil(models.Model):
     direccion = models.CharField(max_length=50,blank=True,null=True,default='No se indica')
     telefono = models.PositiveIntegerField(blank=True,null=True)
     tipo = models.CharField(max_length=20,choices=tipos,default='Normal',null=True)
+    fecha_nacimiento = models.DateField(null=False)
     latitud = models.FloatField(null=True,blank=True)
     longitud = models.FloatField(null=True,blank=True)
     foto = models.ImageField(upload_to='foto_estacionamiento/%Y/%m/%d', blank=True,null=True)

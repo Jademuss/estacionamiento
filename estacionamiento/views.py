@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.template.context_processors import request
 from django.urls import reverse
 from django.utils import timezone
-
+from .models import Perfil
 
 
 def login_view(request):
@@ -37,6 +37,13 @@ def mapa(request):
 
 def registro_normal(request):
     user = User()
+    perfil = Perfil()
     if request.method == 'POST':
-        pass
+        user.first_name = request.POST.get('txtnombre')
+        user.last_name = request.POST.get('txtapellido')
+        user.email = request.POST.get('txtemail')
+        user.perfil.telefono =request.POST.get('txttelefono')
+        user.perfil.fecha_nacimiento
+        user.perfil.tipo   
+        # AQUI QUEDEE
     return render(request,'estacionamiento/registro_normal.html')
