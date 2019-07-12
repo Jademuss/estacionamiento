@@ -83,14 +83,14 @@
             <div class="row">
                 <div class="col">
                    
-                    <input required readonly id="txtlatitud" name="txtlatitud" class="form-control" type="hidden">
+                    <input required readonly  id="txtlatitud" name="txtlatitud" class="form-control sinestilo" type="text">
                 </div>
     
     
     
                 <div class="col">
                  
-                    <input required readonly id="txtlongitud" name="txtlongitud" class="form-control" type="hidden">
+                    <input required readonly id="txtlongitud" name="txtlongitud" class="form-control sinestilo" type="text">
                 </div >
             </div>
     </div>
@@ -138,6 +138,7 @@
             // alert('Clicked at ' + coord.lat  +' ' + coord.lng );
             long.value = coord.lng;
             lat.value = coord.lat;
+            console.log( lat.value)
         });
         yo.addEventListener('click', function () {
             if (navigator.geolocation) {

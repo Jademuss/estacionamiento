@@ -25,7 +25,11 @@
             data-target="#exampleModalCenter">
             Mas info &#8505;
         </button>
-
+        {% if user.is_staff %}
+                    {% if propietario.perfil.estado ==  'Ocupado' %}
+                  <a class="btn btn-success mr-auto" href="{% url 'desocupar' propietario.id  %}" role="button">Desocupar</a>
+                  {% endif %}
+        {% endif %}
         <!-- Modal -->
         <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -157,7 +161,7 @@ Elprecio()
                   lat: {{ propietario.perfil.latitud }},
                   lng: {{ propietario.perfil.longitud }}
               },
-              '<div><a href=\'{% url "detalle_estacionamiento" propietario.id %}\' >{{ propietario.name }}</a><' +
+              '<div><a href=\'{% url "detalle_estacionamiento" propietario.id %}\' >{{ propietario.get_full_name }}</a><' +
                       '/div><div >Direccion:{{ propietario.perfil.direccion }}</div>'
           );
       }

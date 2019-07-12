@@ -11,8 +11,7 @@
 
     {% endblock content %}
 
-
-
+   
 {% block extra_js %}
 <script type="text/javascript" charset="UTF-8" >
 
@@ -46,8 +45,9 @@ function addInfoBubble(map) {
 {% if  propietario.perfil.latitud  and  propietario.perfil.longitud and propietario.perfil.estado == 'Disponible'  %}
  addMarkerToGroup(group, {lat:{{ propietario.perfil.latitud }}, lng:{{ propietario.perfil.longitud }} },
     '<div><a href=\'{% url "detalle_estacionamiento" propietario.id %}\' >{{ propietario.get_full_name }}</a>' +
-    '</div><div >Direccion:{{ propietario.perfil.direccion}}</div>')
+    '</div><div > {% if propietario.perfil.foto %}<img width="100%"  height="70" src="{{ propietario.perfil.foto.url }}" alt=""> {% else %} <b>No tiene foto</b>{% endif %}</div>')
 {% endif %}
+
 
 
 

@@ -4,6 +4,14 @@
 <link rel="stylesheet" href="{% static 'css/registro_normal.css' %}">
 {% endblock extra_css %}
 {% block content %}
+{% if messages %}
+{% for message in messages %}
+<div class="wow wobble" id="alert-{{ alert }}">
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    <strong> {{ message }} </strong>
+</div>
+{% endfor %}
+{% endif %}
 <form class="bg-light rounded
 " method="POST">{% csrf_token %}
       <h2>Registro Arrendatario</h2>

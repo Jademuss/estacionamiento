@@ -60,7 +60,7 @@ def registro_normal(request):
         user.email = request.POST.get('txtemail')
         user.first_name = request.POST.get('txtnombre')
         user.last_name = request.POST.get('txtapellido')
-        user.perfil.fecha_nacimiento = requets.POST.get('txtfecha')
+        user.perfil.fecha_nacimiento = request.POST.get('txtfecha')
         user.perfil.telefono  = request.POST.get('txttelefono')
         user.perfil.direccion = request.POST.get('txtdireccion')
         user.perfil.tipo = 'Normal'
@@ -75,7 +75,7 @@ def registro_propietario(request):
     if request.method == 'POST':
   
         try:
-            user = User.objects.create_user(username=request.POST.get('txtemail'),password=request.POST.get('txtpass'))
+            user = User.objects.create_user(username=request.POST.get('txtemail'),password=request.POST.get('txtpass'),is_staff=True)
             mensaje = 'Registrado como propietario'
         except:
             messages.success(request,'Usuario ya registrado')
@@ -95,7 +95,7 @@ def registro_propietario(request):
         user.perfil.longitud = request.POST.get('txtlongitud')
         try:
            
-            messages.error(request,mensaje)
+            messages.success(request,mensaje)
             user.save()
             variables = {'alert':alert}
             return render(request,'estacionamiento/registro_propietario.html',variables)
@@ -111,9 +111,14 @@ def detalle_estacionamiento(request,id):
     return render(request,'estacionamiento/detalle_estacionamiento.html',variables)
 
 def estado_disponible(request,id):
-    propietario = User.objects.filter(id=id)
-    propietario.update(perfil__estado='Disponible')
-    return render(request,'estacionamiento/mapa.html')
+    alert = 'verde'
+    propietario = get_object_or_404(User,id=id)
+    perfil = Perfil.objects.get(user = propietario)
+    perfil.estado = 'Disponible'
+    messages.success(request,'Estacionamiento desocupado')
+    perfil.save(update_fields=['estado'])
+   
+    return redirect('detalle_estacionamiento',id=propietario.id)
 def estado_ocupado(request,id):
     alert = 'verde'
     propietario = get_object_or_404(User,id=id)

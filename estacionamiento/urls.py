@@ -9,7 +9,8 @@ from . import views
 urlpatterns = [
     path('',views.mapa,name='mapa'),
     path('detalle_estacionamiento/<int:id>/',views.detalle_estacionamiento,name='detalle_estacionamiento'),
-    path('ocupar_estacionamientp/<int:id>/',views.estado_ocupado,name='ocupar'),
+    path('ocupar_estacionamiento/<int:id>/',views.estado_ocupado,name='ocupar'),
+    path('desocupar_estacionamiento/<int:id>/',views.estado_disponible,name='desocupar'),
     path('login/',views.login_view,name='login'),
     path('logout/',views.logout_view,name='logout' ),
     path('registro_normal/',views.registro_normal,name='registro_normal' ),
