@@ -20,7 +20,7 @@
 function addMarkerToGroup(group, coordinate, html) {
     var icono = "{% static 'img/esta.png' %}";
       var icon = new H.map.Icon(icono);
-        //AQUI ELIGO EL ICONO DEL MARCADOR Y LAS CORDENADAS XD
+    
   var marker = new H.map.Marker(coordinate,{icon:icon});
 
   marker.setData(html);
@@ -33,10 +33,8 @@ function addInfoBubble(map) {
 
   map.addObject(group);
 
-  // add 'tap' event listener, that opens info bubble, to the group
   group.addEventListener('tap', function (evt) {
-    // event target is the marker itself, group is a parent event target
-    // for all objects that it contains
+
     var bubble =  new H.ui.InfoBubble(evt.target.getPosition(), {
       // read custom data
       content: evt.target.getData()
@@ -45,7 +43,7 @@ function addInfoBubble(map) {
     ui.addBubble(bubble);
   }, false);
 {% for propietario in propietarios %}
-{% if  propietario.perfil.latitud  and  propietario.perfil.longitud  %}
+{% if  propietario.perfil.latitud  and  propietario.perfil.longitud and propietario.perfil.estado == 'Disponible'  %}
  addMarkerToGroup(group, {lat:{{ propietario.perfil.latitud }}, lng:{{ propietario.perfil.longitud }} },
     '<div><a href=\'{% url "detalle_estacionamiento" propietario.id %}\' >{{ propietario.get_full_name }}</a>' +
     '</div><div >Direccion:{{ propietario.perfil.direccion}}</div>')
@@ -63,6 +61,7 @@ function addInfoBubble(map) {
         lat: event.coords.latitude,
         lng: event.coords.longitude
     };
+    
     ///DIRECTORIOS IMAGENES Markers
     var iam = "{% static 'img/autito.png' %}";
 
@@ -93,7 +92,7 @@ function addInfoBubble(map) {
 
 
 }
-   function centrarMaipu(map) {
+   function centrarSantiago(map) {
         map.setCenter({lat: -33.4844089, lng:-70.7328651 });
         map.setZoom(12.5);
     }
@@ -146,7 +145,7 @@ function erroNo(err) {
       // AGREGAR MARCADORES
     //   addMarkersToMap(map);
     addInfoBubble(map);
-    centrarMaipu(map)
+    centrarSantiago(map)
 </script>
 
 {% endblock extra_js %}

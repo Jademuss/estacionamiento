@@ -1,4 +1,6 @@
 
+from builtins import object
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -8,6 +10,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.template.context_processors import request
 from django.urls import reverse
 from django.utils import timezone
+
 from .models import Perfil
 
 
@@ -106,3 +109,17 @@ def detalle_estacionamiento(request,id):
     propietario = get_object_or_404(User,id=id)
     variables = {'propietario':propietario}
     return render(request,'estacionamiento/detalle_estacionamiento.html',variables)
+
+def estado_disponible(request,id):
+    propietario = User.objects.filter(id=id)
+    propietario.update(perfil__estado='Disponible')
+    return render(request,'estacionamiento/mapa.html')
+def estado_ocupado(request,id):
+    alert = 'verde'
+    propietario = get_object_or_404(User,id=id)
+    perfil = Perfil.objects.get(user = propietario)
+    perfil.estado = 'Ocupado'
+    messages.success(request,'Estacionamiento reservado')
+    perfil.save(update_fields=['estado'])
+   
+    return redirect('detalle_estacionamiento',id=propietario.id)

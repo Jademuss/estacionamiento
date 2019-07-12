@@ -4,28 +4,115 @@
  <link rel="stylesheet" href="{% static 'css/detalle_estacionamiento.css' %}">
  {% endblock extra_css %} 
 {% block content %}
+
+{% if messages %}
+{% for message in messages %}
+<div class="wow wobble" id="alert-{{ alert }}">
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    <strong> {{ message }} </strong>
+</div>
+{% endfor %}
+{% endif %}
 <div class="container-detail">
   <div class="container-info">
     <div id="map"></div>
   </div>
   <div class="container-info">
+    <div class="form-group">
+        <div class="row">
+           
+            <button type="button" class="btn  mx-auto btn-primary" data-toggle="modal"
+            data-target="#exampleModalCenter">
+            Mas info &#8505;
+        </button>
 
-        <div class="card" style="width: 18rem;">
-                <div class="card-header">
-                  Featured
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Confirmar tarjeta
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input required type="text" class="form-control"
+                                onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+                                name="txtnumero" id="txtnumero"
+                                placeholder="Numero tarjeta">
+                        </div>
+                        <div class="row mx-auto">
+                            <label class="mx-auto" for="">Expiración</label>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col">
+                                    <input placeholder="Mes" class="form-control"
+                                        type="number">
+                                </div>
+                                <span class="my-auto">-</span>
+                                <div class="col">
+                                    <input placeholder="Año" class="form-control"
+                                        type="number">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input required type="text" class="form-control"
+                                onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+                                name="txtcodigo" id="txtcodigo"
+                                placeholder="Codigo tarjeta">
+                        </div>
+                        <div class="form-group">
+                          <label for="">Tiempo:</label>
+                              <select required class="form-control form-control-sm" name="txt" id="txttiempo">
+                                <option default value="0">Seleccionar</option>
+                                <option  value="1">1 Hrs</option>
+                                <option value="2">2 Hrs</option>
+                                <option value="3">3 Hrs</option>
+                                <option value="4">4 Hrs</option>
+                                <option value="5">5 Hrs</option>
+                              </select>
+                        </div>
+                        <div class="form-group">
+                            <input readonly required id="txtprecio" class="form-control" type="number">
+                        </div>
+                    </div>
+                    <div class="modal-footer mx-auto">
+                        <a class="btn btn-primary" href="{% url 'ocupar' propietario.id  %}" role="button">Arrendar</a>
+                    </div>
                 </div>
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item">Cras justo odio</li>
-                  <li class="list-group-item">Dapibus ac facilisis in</li>
-                  <li class="list-group-item">Vestibulum at eros</li>
-                </ul>
-              </div>
+            </div>
+        </div>
+      </div>
+         
+    </div>
+      
+  
+      <div id="panel"></div>
   </div>
 </div>
 
 {% endblock content %} 
 {% block extra_js %}
 <script type="text/javascript" charset="UTF-8">
+function Elprecio(){
+  var tiempo = document.getElementById('txttiempo');
+  var precio  = document.getElementById('txtprecio')
+    
+    
+
+    tiempo.onchange=function() {
+      precio.value = parseInt(tiempo.value) * 1000;
+  }
+ 
+}
+Elprecio()
 
       function addMarkerToGroup(group, coordinate, html) {
           var icono = "{% static 'img/esta.png' %}";
@@ -97,14 +184,52 @@
         strip.pushLatLngAlt(parts[0], parts[1]);
       });
       var routeLine = new H.map.Polyline(strip, {
-        style: { strokeColor: 'rgba(133,209,110)', lineWidth: 5 }
+        style: { strokeColor: 'rgba(0,123,255)', lineWidth: 5 }
       });
       map.addObject(routeLine);
       map.setViewBounds(routeLine.getBounds());
-
+      addManueversToPanel(route);
 
     }
   };
+
+
+  var routeInstructionsContainer = document.getElementById('panel')
+  function addManueversToPanel(route){
+
+
+
+var nodeOL = document.createElement('ol'),
+  i,
+  j;
+
+nodeOL.style.fontSize = 'small';
+nodeOL.style.marginLeft ='5%';
+nodeOL.style.marginRight ='5%';
+nodeOL.className = 'directions';
+
+   // Add a marker for each maneuver
+for (i = 0;  i < route.leg.length; i += 1) {
+  for (j = 0;  j < route.leg[i].maneuver.length; j += 1) {
+    // Get the next maneuver.
+    maneuver = route.leg[i].maneuver[j];
+
+    var li = document.createElement('li'),
+      spanArrow = document.createElement('span'),
+      spanInstruction = document.createElement('span');
+
+    spanArrow.className = 'arrow '  + maneuver.action;
+    spanInstruction.innerHTML = maneuver.instruction;
+    li.appendChild(spanArrow);
+    li.appendChild(spanInstruction);
+
+    nodeOL.appendChild(li);
+  }
+}
+
+routeInstructionsContainer.appendChild(nodeOL);
+}
+
     var onError = function(error) {
       console.error('Oh no! There was some communication error!', error);
     }
@@ -150,20 +275,27 @@
       //GUARDO MARCADOR UBICACION ACTUAL
       this.miubicacionMarker = map.addObject(marker);
 
+ function centrarYo(map) {
+          map.setCenter({lat: miubicacion.lat , lng: miubicacion.lng });
+          map.setZoom(16);
+      }
+      centrarYo(map);
 
 
 
-
-  var carritoelegido = {
+  var mypropietario = {
       lat: {{ propietario.perfil.latitud }},
       lng: {{ propietario.perfil.longitud }}
   }
       if (!routeRendered) {
   var route = new HERERoute(map, platform, {
-  mode: 'shortest;pedestrian',
+  mode: 'fastest;car',
+  language: 'es-es',
+  routeattributes : 'waypoints,summary,shape,legs',
+  maneuverattributes: 'direction,action',
   representation: 'display',
   waypoint0: locationToWaypointString(miubicacion),
-  waypoint1: locationToWaypointString(carritoelegido)
+  waypoint1: locationToWaypointString(mypropietario)
   });
 
   routeRendered = true;
@@ -182,11 +314,7 @@
 
 
 
-      function centrarMaipu(map) {
-          map.setCenter({lat: {{ propietario.perfil.latitud }}, lng: {{ propietario.perfil.longitud }}});
-          map.setZoom(16);
-      }
-
+     
       var platform = new H
           .service
           .Platform(
@@ -224,7 +352,7 @@
           .createDefault(map, defaultLayers, 'es-ES');
 
       //OPCIONES DEL MAPAA PRIMERO ES PARA CENTRA EL MAPA EN MAIPUNGA
-      centrarMaipu(map);
+      
       // AGREGAR MARCADORES   addMarkersToMap(map);
       addInfoBubble(map);
 </script>

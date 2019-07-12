@@ -27,7 +27,7 @@ img{
     min-height: 100%; 
 }
 /* The alert message box */
-#alert {
+#alert- {
     padding: 20px;
     background-color: rgb(107,189,110,0.7); /* verde */
     color: white;
