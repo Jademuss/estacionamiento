@@ -102,3 +102,7 @@ def registro_propietario(request):
             variables = {'alert':alert}
             return render(request,'estacionamiento/registro_propietario.html',variables)
     return render(request,'estacionamiento/registro_propietario.html')
+def detalle_estacionamiento(request,id):  
+    propietario = get_object_or_404(User,id=id)
+    variables = {'propietario':propietario}
+    return render(request,'estacionamiento/detalle_estacionamiento.html',variables)

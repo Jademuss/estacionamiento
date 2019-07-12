@@ -47,7 +47,7 @@ function addInfoBubble(map) {
 {% for propietario in propietarios %}
 {% if  propietario.perfil.latitud  and  propietario.perfil.longitud  %}
  addMarkerToGroup(group, {lat:{{ propietario.perfil.latitud }}, lng:{{ propietario.perfil.longitud }} },
-    '<div><a href=\'#\' >{{ propietario.get_full_name }}</a>' +
+    '<div><a href=\'{% url "detalle_estacionamiento" propietario.id %}\' >{{ propietario.get_full_name }}</a>' +
     '</div><div >Direccion:{{ propietario.perfil.direccion}}</div>')
 {% endif %}
 

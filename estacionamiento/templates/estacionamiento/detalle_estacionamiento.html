@@ -1,0 +1,237 @@
+{% extends 'estacionamiento/base.html' %}
+ {% load static %} 
+ {% block extra_css %} 
+ <link rel="stylesheet" href="{% static 'css/detalle_estacionamiento.css' %}">
+ {% endblock extra_css %} 
+{% block content %}
+<div class="container-detail">
+  <div class="container-info">
+    <div id="map"></div>
+  </div>
+  <div class="container-info">
+
+        <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                  Featured
+                </div>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">Cras justo odio</li>
+                  <li class="list-group-item">Dapibus ac facilisis in</li>
+                  <li class="list-group-item">Vestibulum at eros</li>
+                </ul>
+              </div>
+  </div>
+</div>
+
+{% endblock content %} 
+{% block extra_js %}
+<script type="text/javascript" charset="UTF-8">
+
+      function addMarkerToGroup(group, coordinate, html) {
+          var icono = "{% static 'img/esta.png' %}";
+          var icon = new H
+              .map
+              .Icon(icono);
+          var marker = new H
+              .map
+              .Marker(coordinate, {icon: icon});
+          // add custom data to the marker
+          marker.setData(html);
+          group.addObject(marker);
+      }
+
+
+      function addInfoBubble(map) {
+          var group = new H
+              .map
+              .Group();
+
+          map.addObject(group);
+
+
+          group.addEventListener('tap', function (evt) {
+              // event target is the marker itself, group is a parent event target for all
+              // objects that it contains
+              var bubble = new H
+                  .ui
+                  .InfoBubble(evt.target.getPosition(), {
+                      // read custom data
+                      content: evt
+                          .target
+                          .getData()
+                  });
+              // show info bubble
+              ui.addBubble(bubble);
+          }, false);
+
+          addMarkerToGroup(
+              group,
+              {
+                  lat: {{ propietario.perfil.latitud }},
+                  lng: {{ propietario.perfil.longitud }}
+              },
+              '<div><a href=\'{% url "detalle_estacionamiento" propietario.id %}\' >{{ propietario.name }}</a><' +
+                      '/div><div >Direccion:{{ propietario.perfil.direccion }}</div>'
+          );
+      }
+
+
+  function HERERoute (map, platform, routeOptions) {
+    var router = platform.getRoutingService();
+
+   var onSuccess = function(result) {
+    var route,
+      routeShape,
+      startPoint,
+      endPoint,
+      strip;
+
+    if (result.response.route) {
+      route = result.response.route[0];
+      routeShape = route.shape;
+
+      strip = new H.geo.Strip();
+
+      routeShape.forEach(function(point) {
+        var parts = point.split(',');
+        strip.pushLatLngAlt(parts[0], parts[1]);
+      });
+      var routeLine = new H.map.Polyline(strip, {
+        style: { strokeColor: 'rgba(133,209,110)', lineWidth: 5 }
+      });
+      map.addObject(routeLine);
+      map.setViewBounds(routeLine.getBounds());
+
+
+    }
+  };
+    var onError = function(error) {
+      console.error('Oh no! There was some communication error!', error);
+    }
+
+    router.calculateRoute(routeOptions, onSuccess, onError);
+  }
+  function locationToWaypointString(coordinates) {
+    return  coordinates.lat + ',' + coordinates.lng;
+  }
+  var routeRendered = false;
+  var llamdas = 0;
+  function actualizarPosicion(event) {
+      var miubicacion = {
+          lat: event.coords.latitude,
+          lng: event.coords.longitude
+      };
+      ///DIRECTORIOS IMAGENES Markers
+      var iam = "{% static 'img/autito.png' %}";
+    
+      //icono CERDO
+      var icon1 = new H
+          .map
+          .Icon(iam);
+          ///iconopatas
+   
+      var marker = new H
+          .map
+          .Marker(miubicacion, {icon: icon1});
+
+        //VEO SI LA UBICACION NO ES LA MISMA QUE LA ANTERIOR BORRO EL MARCADOR
+        //QUE HABIA PUESTO
+      if(this.miubicacionMarker){
+        map.removeObject(this.miubicacionMarker);
+
+
+    
+
+      }
+
+      //AGREGO MARCADOR UBICACION ACTUAL
+      map.addObject(marker);
+
+      //GUARDO MARCADOR UBICACION ACTUAL
+      this.miubicacionMarker = map.addObject(marker);
+
+
+
+
+
+  var carritoelegido = {
+      lat: {{ propietario.perfil.latitud }},
+      lng: {{ propietario.perfil.longitud }}
+  }
+      if (!routeRendered) {
+  var route = new HERERoute(map, platform, {
+  mode: 'shortest;pedestrian',
+  representation: 'display',
+  waypoint0: locationToWaypointString(miubicacion),
+  waypoint1: locationToWaypointString(carritoelegido)
+  });
+
+  routeRendered = true;
+  }
+
+  }
+   function erroNo(err) {
+     alert("Usted a denegado la ubicación, si desea usar el mapa vuelva activarla")
+      console.warn('ERROR(' + err.code + '): ' + err.message);
+  }
+
+      navigator
+      .geolocation
+      .watchPosition(actualizarPosicion,erroNo,{maximumAge:0, timeout:5000, enableHighAccuracy:true});
+
+
+
+
+      function centrarMaipu(map) {
+          map.setCenter({lat: {{ propietario.perfil.latitud }}, lng: {{ propietario.perfil.longitud }}});
+          map.setZoom(16);
+      }
+
+      var platform = new H
+          .service
+          .Platform(
+              {app_id: 'OQFc1LGBwy2hiEgmWiHC', app_code: 'jim9GfsIaK643wApePxIvg', useHTTPS: true}
+          );
+      var pixelRatio = window.devicePixelRatio || 1;
+      var defaultLayers = platform.createDefaultLayers({
+          tileSize: pixelRatio === 1
+              ? 256
+              : 512,
+          ppi: pixelRatio === 1
+              ? undefined
+              : 320
+      });
+
+      // Step 2: initialize a map  - not specificing a location will give a whole
+      // world view.
+      var map = new H.Map(
+          document.getElementById('map'),
+          defaultLayers.normal.map,
+          {pixelRatio: pixelRatio}
+      );
+
+      // Step 3: make the map interactive MapEvents enables the event system Behavior
+      // implements default interactions for pan/zoom (also on mobile touch
+      // environments)
+      var behavior = new H
+          .mapevents
+          .Behavior(new H.mapevents.MapEvents(map));
+
+      // AGREGAR COMPONENTES UI
+      var ui = H
+          .ui
+          .UI
+          .createDefault(map, defaultLayers, 'es-ES');
+
+      //OPCIONES DEL MAPAA PRIMERO ES PARA CENTRA EL MAPA EN MAIPUNGA
+      centrarMaipu(map);
+      // AGREGAR MARCADORES   addMarkersToMap(map);
+      addInfoBubble(map);
+</script>
+
+<script>
+  $(document).ready(function() {
+    bsCustomFileInput.init();
+  });
+</script>
+{% endblock extra_js %}
